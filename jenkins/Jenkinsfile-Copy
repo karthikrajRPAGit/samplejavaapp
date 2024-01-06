@@ -1,0 +1,11 @@
+pipeline {
+    agent agent1
+    stages {
+        stage('copy file') {
+	   steps {
+                echo 'copying..'
+		sh script: 'cp ./Dockerfile /home/ubuntu'
+           }
+        }
+    }
+}
