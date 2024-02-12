@@ -10,13 +10,13 @@ pipeline {
 	   steps {
                 echo 'compiling..'
 		git url: 'https://github.com/puneetgavri/samplejavaapp.git'
-		sh script: '/opt/maven/bin/mvn compile'
+		sh script: '/usr/share/maven/bin/mvn compile'
            }
         }
         stage('codereview-pmd') {
 	   steps {
                 echo 'codereview..'
-		sh script: '/opt/maven/bin/mvn -P metrics pmd:pmd'
+		sh script: '/usr/share/maven/bin/mvn -P metrics pmd:pmd'
            }
 	   post {
                success {
@@ -27,7 +27,7 @@ pipeline {
         stage('unit-test') {
 	   steps {
                 echo 'unittest..'
-	        sh script: '/opt/maven/bin/mvn test'
+	        sh script: '/usr/share/maven/bin/mvn test'
                  }
 	   post {
                success {
@@ -38,7 +38,7 @@ pipeline {
         stage('codecoverage') {
 	   steps {
                 echo 'unittest..'
-	        sh script: '/opt/maven/bin/mvn verify'
+	        sh script: '/usr/share/maven/bin/mvn verify'
                  }
 	   post {
                success {
@@ -49,7 +49,7 @@ pipeline {
         stage('package') {
 	   steps {
                 echo 'package......'
-		sh script: '/opt/maven/bin/mvn package'	
+		sh script: '/usr/share/maven/bin/mvn package'	
            }		
         }
 	stage('Build Docker Image') {
