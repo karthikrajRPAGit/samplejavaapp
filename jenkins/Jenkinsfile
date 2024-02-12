@@ -3,7 +3,7 @@ pipeline {
     environment {
     	dockerHome = tool 'myDocker'
 	mavenHome = tool 'myMaven'
-	PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
+	PATH = "$dockerHome:$mavenHome/bin:$PATH"
     }
     stages {
         stage('compile') {
@@ -43,9 +43,8 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	   steps {
-		echo 'Building Docker Image....'
 		script {
-			dockerImage=docker.build("dockthik/samplejavaapp-intelassess:${env.BUILD_TAG}")
+			dockerImage = docker.build("dockthik/samplejavaapp-intelassess:${env.BUILD_TAG}")
 		}
 	   }
 	}
