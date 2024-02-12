@@ -1,0 +1,83 @@
+pipeline {
+    agent { label 'node1' }
+    environment {
+    	dockerHome = tool 'myDocker'
+	mavenHome = tool 'myMaven'
+	PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
+    }
+    stages {
+        stage('compile') {
+	   steps {
+                echo 'compiling..'
+		git url: 'https://github.com/puneetgavri/samplejavaapp.git'
+		sh script: '/opt/maven/bin/mvn compile'
+           }
+        }
+        stage('codereview-pmd') {
+	   steps {
+                echo 'codereview..'
+		sh script: '/opt/maven/bin/mvn -P metrics pmd:pmd'
+           }
+	   post {
+               success {
+		   recordIssues enabledForFailure: true, tool: pmdParser(pattern: '**/target/pmd.xml')
+               }
+           }		
+        }
+        stage('unit-test') {
+	   steps {
+                echo 'unittest..'
+	        sh script: '/opt/maven/bin/mvn test'
+                 }
+	   post {
+               success {
+                   junit 'target/surefire-reports/*.xml'
+               }
+           }			
+        }
+        stage('codecoverage') {
+	   steps {
+                echo 'unittest..'
+	        sh script: '/opt/maven/bin/mvn verify'
+                 }
+	   post {
+               success {
+                   jacoco buildOverBuild: true, deltaBranchCoverage: '20', deltaClassCoverage: '20', deltaComplexityCoverage: '20', deltaInstructionCoverage: '20', deltaLineCoverage: '20', deltaMethodCoverage: '20'
+               }
+           }			
+        }
+        stage('package') {
+	   steps {
+                echo 'package......'
+		sh script: '/opt/maven/bin/mvn package'	
+           }		
+        }
+	stage('Build Docker Image') {
+	   steps {
+		echo 'Building Docker Image....'
+		dockerImage=docker.build("dockthik/samplejavaapp-intelassess:${env.BUILD_TAG}")
+	   }
+	}
+	stage('Push Docker Image') {
+	   steps {
+		echo 'Pushing Docker Image....'
+		docker.withRegistry('','docker') {
+			dockerImage.push();
+			dockerImage.push('latest');
+	       }
+	   }
+	   post {
+		success {
+			when {
+				expression { "$env.BRANCH_NAME" == "Master" }
+			}
+			steps {
+				sh script: 'docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest'
+			}
+		}
+	   }
+	}
+		
+    }
+    
+}
