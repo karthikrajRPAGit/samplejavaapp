@@ -8,7 +8,7 @@ pipeline {
 	   steps {
                 echo 'compiling..'
 		sh 'docker --version'
-		sh '${env.BUILD_NUMBER}'
+		sh "${env.BUILD_NUMBER}"
 		git url: 'https://github.com/puneetgavri/samplejavaapp.git'
 		sh script: '/opt/maven/bin/mvn compile'
            }
@@ -43,7 +43,7 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	   steps {
-		 sh 'docker build -t dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} .'
+		 sh "docker build -t dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} ."
 	   }
 	}
 	stage('Login to DockerHub') {
@@ -54,7 +54,8 @@ pipeline {
 	stage('Push Docker Image') {
 	   steps {
 		echo 'Pushing Docker Image....'
-		sh 'sudo docker push dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER}'
+		sh "docker push dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER}"
+		sh "docker tag dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} dockthik/samplejavaapp-intelprojdevops:latest" 
 	       }
 	   post {
 		success {
@@ -62,7 +63,7 @@ pipeline {
 				expression { "$env.BRANCH_NAME" == "master" }
 			}
 			steps {
-				sh script: 'docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest'
+				sh script: "docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
 			}
 		}
 	   }
