@@ -1,8 +1,6 @@
 pipeline {
     agent any
     environment {
-	dockerHome = tool 'myDocker2'
-	PATH = "$dockerHome/bin:$PATH"
 	DOCKERHUB_CREDENTIALS = credentials('docker')
     }
     stages {
