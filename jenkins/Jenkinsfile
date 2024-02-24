@@ -9,6 +9,7 @@ pipeline {
                 echo 'compiling..'
 		sh 'docker --version'
 		echo "Build Number: ${env.BUILD_NUMBER}"
+		echo "Branch Name: ${env.BRANCH_NAME}"
 		git url: 'https://github.com/puneetgavri/samplejavaapp.git'
 		sh script: '/opt/maven/bin/mvn compile'
            }
@@ -60,7 +61,7 @@ pipeline {
 	   post {
 		success {
 			script {
-				if (env.BRANCH_NAME == 'master')
+				if (${env.BRANCH_NAME} == "Master")
 					sh "docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
 			}
 		}
