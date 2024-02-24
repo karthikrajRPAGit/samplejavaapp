@@ -59,11 +59,9 @@ pipeline {
 	       }
 	   post {
 		success {
-			when {
-				expression { "$env.BRANCH_NAME" == "master" }
-			}
-			steps {
-				sh script: "docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
+			script {
+				if (env.BRANCH_NAME == 'master')
+					sh "docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
 			}
 		}
 	   }
