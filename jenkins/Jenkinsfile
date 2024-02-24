@@ -1,9 +1,6 @@
 pipeline {
     agent any
     environment {
-    	dockerHome = tool 'myDocker'
-	mavenHome = tool 'myMaven'
-	PATH = "$dockerHome:$mavenHome/bin:$PATH"
 	DOCKERHUB_CREDENTIALS = credentials('docker')
     }
     stages {
