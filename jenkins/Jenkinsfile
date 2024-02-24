@@ -62,7 +62,7 @@ pipeline {
 		success {
 			script {
 				if (env.GIT_BRANCH == "origin/master")
-					sh "docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
+					sh "docker run -d -p 8081:8081 dockthik/samplejavaapp-intelprojdevops:latest"
 			}
 		}
 	   }
