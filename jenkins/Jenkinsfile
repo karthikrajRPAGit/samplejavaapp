@@ -43,19 +43,19 @@ pipeline {
         }
 	stage('Build Docker Image') {
 	   steps {
-		 sh "sudo docker build -t dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} ."
+		 sh "docker build -t dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} ."
 	   }
 	}
 	stage('Login to DockerHub') {
 	   steps {
-		sh 'echo $DOCKERHUB_CREDENTIALS_PSW | sudo docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
+		sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
 		}
 	}
 	stage('Push Docker Image') {
 	   steps {
 		echo 'Pushing Docker Image....'
-		sh "sudo docker push dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER}"
-		sh "sudo docker tag dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} dockthik/samplejavaapp-intelprojdevops:latest" 
+		sh "docker push dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER}"
+		sh "docker tag dockthik/samplejavaapp-intelprojdevops:${env.BUILD_NUMBER} dockthik/samplejavaapp-intelprojdevops:latest" 
 	       }
 	   post {
 		success {
@@ -63,7 +63,7 @@ pipeline {
 				expression { "$env.BRANCH_NAME" == "master" }
 			}
 			steps {
-				sh script: "sudo docker pull dockthik/samplejavaapp-intelassess:latest; sudo docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
+				sh script: "docker pull dockthik/samplejavaapp-intelassess:latest; docker run -d -p 8081:8081 dockthik/samplejavaapp-intelassess:latest"
 			}
 		}
 	   }
